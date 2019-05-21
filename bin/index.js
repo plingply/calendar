@@ -1,12 +1,13 @@
 /**
  * calendar 1.0.0
- * created at Tue May 21 2019 13:12:15 GMT+0800 (GMT+08:00)
+ * created at Tue May 21 2019 13:16:55 GMT+0800 (GMT+08:00)
  */
 
-(function (factory) {
+(function (global, factory) {
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
   typeof define === 'function' && define.amd ? define(factory) :
-  factory();
-}(function () { 'use strict';
+  (global = global || self, global.calendar = factory());
+}(this, function () { 'use strict';
 
   var classCallCheck = function (instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -54,6 +55,14 @@
       }
 
       createClass(calendar, [{
+          key: 'init',
+          value: function init() {
+
+              this.year = this.time.getFullYear();
+              this.month = this.time.getMonth();
+              this.getDateCount();
+          }
+      }, {
           key: 'getDateCount',
           value: function getDateCount() {
               var tepMonth = this.month + 1;
@@ -115,16 +124,10 @@
               this.resultArr = this.resultArr[35].isCurrentMonth ? this.resultArr : this.resultArr.splice(0, 35);
               return this.resultArr;
           }
-      }], [{
-          key: 'init',
-          value: function init() {
-
-              this.year = this.time.getFullYear();
-              this.month = this.time.getMonth();
-              this.getDateCount();
-          }
       }]);
       return calendar;
   }();
+
+  return calendar;
 
 }));

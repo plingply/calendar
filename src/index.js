@@ -14,7 +14,7 @@ class calendar {
         this.init()
     }
 
-    static init() {
+    init() {
 
         this.year = this.time.getFullYear()
         this.month = this.time.getMonth()
@@ -81,3 +81,5 @@ class calendar {
         return this.resultArr
     }
 }
+
+export default calendar
