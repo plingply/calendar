@@ -1,0 +1,38 @@
+{
+  "name": "calendar",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bin/index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "build": "rollup --config rollup.config.prod.js --watch",
+    "push": "npm publish && git add --all && git commit -a -m '文档更新' && git push origin master"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plingply/calendar.git"
+  },
+  "keywords": [
+    "https://github.com/plingply/calendar.git"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/plingply/calendar/issues"
+  },
+  "homepage": "https://github.com/plingply/calendar#readme",
+  "devDependencies": {
+    "babel-plugin-external-helpers": "^6.22.0",
+    "babel-preset-latest": "^6.24.1",
+    "rollup": "^1.12.3",
+    "rollup-plugin-babel": "^4.3.2",
+    "rollup-plugin-commonjs": "^10.0.0",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-license": "^0.8.1",
+    "rollup-plugin-node-resolve": "^5.0.0",
+    "rollup-plugin-progress": "^1.1.1",
+    "rollup-plugin-replace": "^2.2.0"
+  }
+}
