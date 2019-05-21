@@ -17,6 +17,7 @@ export default {
     },
     moduleName: 'calendar',
     plugins: [
+        resolve(),
         license({
             banner: `calendar ${version}\n created at ${new Date()}`
         }),
@@ -26,9 +27,6 @@ export default {
         }),
         replace({
             VERSION: version
-        }),
-        resolve({
-            jsnext: true
         }),
         commonjs({
             include: 'node_modules/lrz/**'
