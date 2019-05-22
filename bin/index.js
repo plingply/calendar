@@ -1,6 +1,6 @@
 /**
  * calendar 1.0.0
- * created at Tue May 21 2019 13:16:55 GMT+0800 (GMT+08:00)
+ * created at Wed May 22 2019 23:17:43 GMT+0800 (GMT+08:00)
  */
 
 (function (global, factory) {
@@ -34,16 +34,44 @@
   }();
 
   var calendar = function () {
-      function calendar() {
-          var time = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : new Date();
-          var type = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 'month';
-          var week = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : 0;
+      function calendar(obj) {
           classCallCheck(this, calendar);
+
+
+          /**
+           * time 可以别new Date() 格式化的格式
+           * type month 月 week 周
+           * week 1：从星期一开始 0 从星期天开始
+           */
+
+          if (obj.time && typeof obj.time == 'string') {
+              if (Number(obj.time)) {
+                  obj.time = Number(obj.time);
+              } else {
+                  console.error("请传入可以被new Date() 解析的时间格式");
+                  return {};
+              }
+          }
+
+          var time = obj.time ? obj.time : new Date();
+          var type = obj.type ? obj.type : 'month';
+          var week = obj.week ? obj.week : 1;
+
+          if (new Date(time).toString() === 'Invalid Date') {
+              console.error("请传入可以被new Date() 解析的时间格式");
+              return {};
+          }
+
+          if (type != 'month' && type != 'week') {
+              console.error("type 必须为：week 或者 month");
+              return {};
+          }
 
           if (week != 0 && week != 1) {
               console.error("星期必须传1或0，0代表星期天");
-              return;
+              return {};
           }
+
           this.time = new Date(time);
           this.year = null;
           this.month = null;
@@ -51,20 +79,20 @@
           this.type = type;
           this.week = week;
           this.resultArr = [];
-          this.init();
+          this._init();
       }
 
       createClass(calendar, [{
-          key: 'init',
-          value: function init() {
+          key: '_init',
+          value: function _init() {
 
               this.year = this.time.getFullYear();
               this.month = this.time.getMonth();
-              this.getDateCount();
+              this._getDateCount();
           }
       }, {
-          key: 'getDateCount',
-          value: function getDateCount() {
+          key: '_getDateCount',
+          value: function _getDateCount() {
               var tepMonth = this.month + 1;
               var nextMonth = 0;
               var nextYear = 0;
@@ -80,14 +108,23 @@
               this.day = new Date(nextTime).getDate();
           }
       }, {
-          key: 'getData',
-          value: function getData() {
+          key: 'init',
+          value: function init() {
+              if (this.type == 'month') {
+                  return this._getMonthData();
+              }
+          }
+      }, {
+          key: '_getMonthData',
+          value: function _getMonthData() {
+
               var first = new Date(this.year, this.month, 1).getDay();
               if (this.week === 1) {
                   first = first === 0 ? 7 : first;
               }
               this.resultArr = [];
               var week = this.week;
+              var nextday = 0;
               for (var i = this.week; i < 42; i++) {
 
                   if (this.week === 1) {
@@ -96,33 +133,88 @@
                       week = week > 6 ? 0 : week;
                   }
                   var weeks = week === 0 ? 7 : week;
+                  weeks = weeks + '';
+                  var isCurrentMonth = false;
+                  var day = void 0,
+                      _month = void 0,
+                      year = void 0;
 
                   if (i < first) {
-                      this.resultArr.push({
-                          isCurrentMonth: false
-                      });
-                  } else if (i > this.day + first - this.week) {
-                      this.resultArr.push({
-                          isCurrentMonth: false
-                      });
-                  } else {
-                      var day = i - first + 1;
+                      var prewtime = new Date(new Date(this.year, this.month, 1).getTime() - 1000 * 3600 * 24 * (first - i));
+                      day = prewtime.getDate();
+                      _month = prewtime.getMonth() + 1;
+                      year = prewtime.getFullYear();
                       day = day < 10 ? '0' + day : day + '';
-                      var month = this.month + 1;
-                      month = month < 10 ? '0' + month : month + '';
-                      this.resultArr.push({
-                          day: day,
-                          month: month,
-                          year: this.year + '',
-                          week: weeks,
-                          isCurrentMonth: true
-                      });
+                      _month = _month < 10 ? '0' + _month : _month + '';
+                      isCurrentMonth = false;
+                  } else if (i > this.day + first - 1) {
+                      day = nextday++ + 1;
+                      day = day < 10 ? '0' + day : day + '';
+                      _month = this.month + 2;
+                      year = this.year;
+                      if (_month > 12) {
+                          _month = 1;
+                          year = year + 1;
+                      }
+                      _month = _month < 10 ? '0' + _month : _month + '';
+                      isCurrentMonth = false;
+                  } else {
+                      day = i - first + 1;
+                      day = day < 10 ? '0' + day : day + '';
+                      _month = this.month + 1;
+                      _month = _month < 10 ? '0' + _month : _month + '';
+                      year = this.year + '';
                   }
+
+                  var isToday = false;
+                  if (parseInt(new Date(year, _month - 1, day).setHours(0, 0, 0) / 1000) === parseInt(this.time.setHours(0, 0, 0) / 1000)) {
+                      isToday = true;
+                  }
+
+                  this.resultArr.push({
+                      day: day,
+                      month: _month,
+                      year: year,
+                      week: weeks,
+                      isCurrentMonth: isCurrentMonth,
+                      isToday: isToday
+                  });
 
                   week++;
               }
+
               this.resultArr = this.resultArr[35].isCurrentMonth ? this.resultArr : this.resultArr.splice(0, 35);
-              return this.resultArr;
+              var month = this.month + 1;
+              month = month < 10 ? '0' + month : month + '';
+              var weekArr = this.week == '1' ? [1, 2, 3, 4, 5, 6, 7] : [7, 1, 2, 3, 4, 5, 6];
+              return {
+                  year: this.year + '',
+                  month: month,
+                  week: weekArr,
+                  item: this.resultArr
+              };
+          }
+      }, {
+          key: 'prew',
+          value: function prew() {
+              this.month--;
+              if (this.month < 0) {
+                  this.month = 11;
+                  this.year--;
+              }
+              this._getDateCount();
+              return this._getMonthData();
+          }
+      }, {
+          key: 'next',
+          value: function next() {
+              this.month++;
+              if (this.month > 11) {
+                  this.month = 0;
+                  this.year++;
+              }
+              this._getDateCount();
+              return this._getMonthData();
           }
       }]);
       return calendar;

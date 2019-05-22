@@ -1,16 +1,98 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Document</title>
     <script src="../bin/index.js"></script>
+    <script src="../node_modules/vue/dist/vue.js"></script>
+    <style>
+        * {
+            padding: 0;
+            margin: 0;
+            box-sizing: border-box;
+        }
+
+        .box {
+            width: 710px;
+            height: 1000px;
+            margin: auto;
+            border-top: 1px solid #eee;
+            border-left: 1px solid #eee;
+            overflow: hidden;
+        }
+
+        .box span {
+            display: block;
+            float: left;
+            width: 100px;
+            height: 100px;
+            border-right: 1px solid #eee;
+            border-bottom: 1px solid #eee;
+            font-size: 18px;
+            color: #999;
+            line-height: 100px;
+            text-align: center;
+        }
+
+        .box span.today{
+            color: red;
+        }
+
+        .box span.active {
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            padding: 30px;
+        }
+    </style>
 </head>
+
 <body>
+    <div id="app">
+        <h1><button @click="prew">上一月</button>{{ list.year }}-{{ list.month }}<button @click="next">下一月</button></h1>
+        <div class="box">
+            <span v-for="(item,index) in list.week">
+                <em v-if="item == 1">星期一</em>
+                <em v-if="item == 2">星期二</em>
+                <em v-if="item == 3">星期三</em>
+                <em v-if="item == 4">星期四</em>
+                <em v-if="item == 5">星期五</em>
+                <em v-if="item == 6">星期六</em>
+                <em v-if="item == 7">星期七</em>
+            </span>
+            <span :class="{ today: item.isToday }" v-for="(item,index) in list.item">
+                {{ item.day }}
+            </span>
+        </div>
+    </div>
     <script>
-        var a = new calendar()
-        console.log(a.getData())
+        var a = new calendar({
+            time: new Date(),
+            type: 'month',
+            week: '1'
+        })
+        console.log(a.init())
+        new Vue({
+            el: "#app",
+            data: {
+                list: a.init()
+            },
+
+            methods: {
+                prew() {
+                    this.list = a.prew()
+                },
+                next() {
+                    this.list = a.next()
+                }
+            }
+        })
     </script>
 </body>
+
 </html>
