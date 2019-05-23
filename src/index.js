@@ -132,6 +132,7 @@ class calendar {
                 month = this.month + 1
                 month = month < 10 ? ('0' + month) : month + ''
                 year = this.year + ''
+                isCurrentMonth = true
             }
 
             let isCurrentToday = false

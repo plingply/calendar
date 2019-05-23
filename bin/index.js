@@ -1,6 +1,6 @@
 /**
- * calendar 1.0.3
- * created at Thu May 23 2019 11:04:52 GMT+0800 (GMT+08:00)
+ * calendar 1.0.4
+ * created at Thu May 23 2019 14:46:33 GMT+0800 (GMT+08:00)
  */
 
 (function (global, factory) {
@@ -175,6 +175,7 @@
                       _month = this.month + 1;
                       _month = _month < 10 ? '0' + _month : _month + '';
                       year = this.year + '';
+                      isCurrentMonth = true;
                   }
 
                   var isCurrentToday = false;
