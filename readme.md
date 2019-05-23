@@ -19,7 +19,7 @@ c-calendar
 
     /*
         time: 可以被new Date()解析的时间
-        type: month 和 week week返回一个礼拜的时间 还未实现
+        type: month 和 week week返回一个礼拜的时间 
         week 1表示从星期1开始 0表示从星期天开始
     */
 
@@ -31,6 +31,6 @@ c-calendar
         year, // 年
         week, // 星期
         isCurrentMonth, // 是否是当月
-        isToday // 是否是传入的当天
+        isCurrentToday // 是否是传入的当天
     }
 `

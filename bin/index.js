@@ -1,6 +1,6 @@
 /**
- * calendar 1.0.0
- * created at Wed May 22 2019 23:17:43 GMT+0800 (GMT+08:00)
+ * calendar 1.0.3
+ * created at Thu May 23 2019 11:04:52 GMT+0800 (GMT+08:00)
  */
 
 (function (global, factory) {
@@ -73,11 +73,12 @@
           }
 
           this.time = new Date(time);
+          this.weektime = new Date(time);
           this.year = null;
           this.month = null;
           this.day = 0;
           this.type = type;
-          this.week = week;
+          this.week = Number(week);
           this.resultArr = [];
           this._init();
       }
@@ -86,9 +87,15 @@
           key: '_init',
           value: function _init() {
 
-              this.year = this.time.getFullYear();
-              this.month = this.time.getMonth();
-              this._getDateCount();
+              if (this.type == 'month') {
+                  this.year = this.time.getFullYear();
+                  this.month = this.time.getMonth();
+                  this._getDateCount();
+              }
+
+              if (this.type == 'week') {
+                  this.day = 0;
+              }
           }
       }, {
           key: '_getDateCount',
@@ -112,6 +119,10 @@
           value: function init() {
               if (this.type == 'month') {
                   return this._getMonthData();
+              }
+
+              if (this.type == 'week') {
+                  return this._getWeekData();
               }
           }
       }, {
@@ -166,9 +177,9 @@
                       year = this.year + '';
                   }
 
-                  var isToday = false;
+                  var isCurrentToday = false;
                   if (parseInt(new Date(year, _month - 1, day).setHours(0, 0, 0) / 1000) === parseInt(this.time.setHours(0, 0, 0) / 1000)) {
-                      isToday = true;
+                      isCurrentToday = true;
                   }
 
                   this.resultArr.push({
@@ -177,7 +188,7 @@
                       year: year,
                       week: weeks,
                       isCurrentMonth: isCurrentMonth,
-                      isToday: isToday
+                      isCurrentToday: isCurrentToday
                   });
 
                   week++;
@@ -195,26 +206,95 @@
               };
           }
       }, {
+          key: '_getWeekData',
+          value: function _getWeekData() {
+
+              this.weektime = new Date(this.time.getTime() + this.day * 1000 * 3600 * 24 * 7);
+
+              var first = this.weektime.getDay();
+              var oneDay = 1000 * 3600 * 24;
+              var nowTime = this.weektime.getTime();
+
+              if (this.week == 1) {
+                  first = first === 0 ? 7 : first;
+              }
+              this.resultArr = [];
+              var month = void 0,
+                  year = void 0,
+                  day = void 0;
+
+              for (var i = this.week; i < 7 + this.week; i++) {
+                  var ctime = nowTime - (first - i) * oneDay;
+                  day = new Date(ctime).getDate();
+                  day = day < 10 ? '0' + day : day + '';
+                  month = new Date(ctime).getMonth() + 1;
+                  month = month < 10 ? '0' + month : month + '';
+                  year = new Date(ctime).getFullYear() + '';
+
+                  var isCurrentMonth = false;
+                  var isCurrentToday = false;
+
+                  var fullYear = this.time.getFullYear();
+                  var fullMonth = this.time.getMonth();
+                  var fullDay = this.time.getDate();
+
+                  if (fullYear == year && fullMonth == month - 1) {
+                      isCurrentMonth = true;
+                      if (fullDay == day) {
+                          isCurrentToday = true;
+                      }
+                  }
+                  this.resultArr.push({
+                      day: day,
+                      month: month,
+                      year: year,
+                      week: i == 0 ? 7 : i,
+                      isCurrentMonth: isCurrentMonth,
+                      isCurrentToday: isCurrentToday
+                  });
+              }
+
+              var weekArr = this.week == '1' ? [1, 2, 3, 4, 5, 6, 7] : [7, 1, 2, 3, 4, 5, 6];
+              return {
+                  week: weekArr,
+                  item: this.resultArr
+              };
+          }
+      }, {
           key: 'prew',
           value: function prew() {
-              this.month--;
-              if (this.month < 0) {
-                  this.month = 11;
-                  this.year--;
+
+              if (this.type == 'month') {
+                  this.month--;
+                  if (this.month < 0) {
+                      this.month = 11;
+                      this.year--;
+                  }
+                  this._getDateCount();
+                  return this._getMonthData();
               }
-              this._getDateCount();
-              return this._getMonthData();
+
+              if (this.type == 'week') {
+                  this.day--;
+                  return this._getWeekData();
+              }
           }
       }, {
           key: 'next',
           value: function next() {
-              this.month++;
-              if (this.month > 11) {
-                  this.month = 0;
-                  this.year++;
+              if (this.type == 'month') {
+                  this.month++;
+                  if (this.month > 11) {
+                      this.month = 0;
+                      this.year++;
+                  }
+                  this._getDateCount();
+                  return this._getMonthData();
               }
-              this._getDateCount();
-              return this._getMonthData();
+              if (this.type == 'week') {
+                  this.day++;
+                  return this._getWeekData();
+              }
           }
       }]);
       return calendar;

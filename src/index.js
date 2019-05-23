@@ -36,20 +36,28 @@ class calendar {
         }
 
         this.time = new Date(time)
+        this.weektime = new Date(time)
         this.year = null
         this.month = null
         this.day = 0
         this.type = type
-        this.week = week
+        this.week = Number(week)
         this.resultArr = []
         this._init()
     }
 
     _init() {
 
-        this.year = this.time.getFullYear()
-        this.month = this.time.getMonth()
-        this._getDateCount()
+        if (this.type == 'month') {
+            this.year = this.time.getFullYear()
+            this.month = this.time.getMonth()
+            this._getDateCount()
+        }
+
+        if (this.type == 'week') {
+            this.day = 0
+        }
+
     }
 
     _getDateCount() {
@@ -71,6 +79,10 @@ class calendar {
     init() {
         if (this.type == 'month') {
             return this._getMonthData()
+        }
+
+        if (this.type == 'week') {
+            return this._getWeekData()
         }
     }
 
@@ -122,9 +134,9 @@ class calendar {
                 year = this.year + ''
             }
 
-            let isToday = false
-            if (parseInt(new Date(year, month - 1, day).setHours(0, 0, 0)/1000) === parseInt(this.time.setHours(0, 0, 0)/1000)) {
-                isToday = true
+            let isCurrentToday = false
+            if (parseInt(new Date(year, month - 1, day).setHours(0, 0, 0) / 1000) === parseInt(this.time.setHours(0, 0, 0) / 1000)) {
+                isCurrentToday = true
             }
 
             this.resultArr.push({
@@ -133,7 +145,7 @@ class calendar {
                 year,
                 week: weeks,
                 isCurrentMonth,
-                isToday
+                isCurrentToday
             })
 
             week++
@@ -151,24 +163,91 @@ class calendar {
         }
     }
 
-    prew() {
-        this.month--
-        if (this.month < 0) {
-            this.month = 11
-            this.year--
+    _getWeekData() {
+
+        this.weektime = new Date(this.time.getTime() + this.day * 1000 * 3600 * 24 * 7)
+
+        let first = this.weektime.getDay()
+        let oneDay = 1000 * 3600 * 24
+        let nowTime = this.weektime.getTime()
+
+        if (this.week == 1) {
+            first = first === 0 ? 7 : first
         }
-        this._getDateCount()
-        return this._getMonthData()
+        this.resultArr = []
+        let month, year, day
+
+        for (let i = this.week; i < 7 + this.week; i++) {
+            let ctime = nowTime - (first - i) * oneDay
+            day = new Date(ctime).getDate()
+            day = day < 10 ? '0' + day : day + ''
+            month = new Date(ctime).getMonth() + 1
+            month = month < 10 ? '0' + month : month + ''
+            year = new Date(ctime).getFullYear() + ''
+
+            let isCurrentMonth = false
+            let isCurrentToday = false
+
+            let fullYear = this.time.getFullYear()
+            let fullMonth = this.time.getMonth()
+            let fullDay = this.time.getDate()
+
+            if (fullYear == year && fullMonth == month - 1) {
+                isCurrentMonth = true
+                if (fullDay == day) {
+                    isCurrentToday = true
+                }
+            }
+            this.resultArr.push({
+                day,
+                month,
+                year,
+                week: i == 0 ? 7 : i,
+                isCurrentMonth,
+                isCurrentToday
+            })
+        }
+
+        let weekArr = this.week == '1' ? [1, 2, 3, 4, 5, 6, 7] : [7, 1, 2, 3, 4, 5, 6]
+        return {
+            week: weekArr,
+            item: this.resultArr
+        }
+    }
+
+    prew() {
+
+        if (this.type == 'month') {
+            this.month--
+            if (this.month < 0) {
+                this.month = 11
+                this.year--
+            }
+            this._getDateCount()
+            return this._getMonthData()
+        }
+
+        if (this.type == 'week') {
+            this.day--
+            return this._getWeekData()
+        }
+
     }
 
     next() {
-        this.month++
-        if (this.month > 11) {
-            this.month = 0
-            this.year++
+        if (this.type == 'month') {
+            this.month++
+            if (this.month > 11) {
+                this.month = 0
+                this.year++
+            }
+            this._getDateCount()
+            return this._getMonthData()
         }
-        this._getDateCount()
-        return this._getMonthData()
+        if (this.type == 'week') {
+            this.day++
+            return this._getWeekData()
+        }
     }
 }
 

@@ -33,12 +33,14 @@
             border-bottom: 1px solid #eee;
             font-size: 18px;
             color: #999;
-            line-height: 100px;
             text-align: center;
         }
 
         .box span.today{
             color: red;
+        }
+        .box span.by{
+            background-color: #eee;
         }
 
         .box span.active {
@@ -65,15 +67,16 @@
                 <em v-if="item == 6">星期六</em>
                 <em v-if="item == 7">星期七</em>
             </span>
-            <span :class="{ today: item.isToday }" v-for="(item,index) in list.item">
+            <span :class="{ today: item.isCurrentToday, by: item.isCurrentMonth }" v-for="(item,index) in list.item">
                 {{ item.day }}
+                <p>{{ item.year }}-{{ item.month }}</p>
             </span>
         </div>
     </div>
     <script>
         var a = new calendar({
-            time: new Date(),
-            type: 'month',
+            time: new Date(2019,4,23),
+            type: 'week',
             week: '1'
         })
         new Vue({
