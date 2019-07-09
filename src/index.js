@@ -18,8 +18,10 @@ class calendar {
 
         let time = obj.time ? obj.time : new Date()
         let type = obj.type ? obj.type : 'month'
-        let week = obj.week ? obj.week : 1
-
+        let week = obj.week
+        if(week != 0 && week != 1){
+            week = 1
+        }
         if (new Date(time).toString() === 'Invalid Date') {
             console.error("请传入可以被new Date() 解析的时间格式")
             return {}

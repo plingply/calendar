@@ -1,6 +1,6 @@
 /**
- * calendar 1.0.4
- * created at Thu May 23 2019 14:46:33 GMT+0800 (GMT+08:00)
+ * calendar 1.0.6
+ * created at Tue Jul 09 2019 10:09:37 GMT+0800 (GMT+08:00)
  */
 
 (function (global, factory) {
@@ -55,8 +55,10 @@
 
           var time = obj.time ? obj.time : new Date();
           var type = obj.type ? obj.type : 'month';
-          var week = obj.week ? obj.week : 1;
-
+          var week = obj.week;
+          if (week != 0 && week != 1) {
+              week = 1;
+          }
           if (new Date(time).toString() === 'Invalid Date') {
               console.error("请传入可以被new Date() 解析的时间格式");
               return {};
