@@ -89,7 +89,8 @@ class calendar {
     }
 
     _getMonthData() {
-
+        let currentYear = new Date().getFullYear()
+        let currentMonth = new Date().getMonth() + 1
         let first = new Date(this.year, this.month, 1).getDay()
         if (this.week === 1) {
             first = first === 0 ? 7 : first
@@ -134,7 +135,12 @@ class calendar {
                 month = this.month + 1
                 month = month < 10 ? ('0' + month) : month + ''
                 year = this.year + ''
-                isCurrentMonth = true
+
+                if(currentYear == year && currentMonth == month){
+                    isCurrentMonth = true
+                }else{
+                    isCurrentMonth = false
+                }
             }
 
             let isCurrentToday = false
@@ -191,9 +197,9 @@ class calendar {
             let isCurrentMonth = false
             let isCurrentToday = false
 
-            let fullYear = this.time.getFullYear()
-            let fullMonth = this.time.getMonth()
-            let fullDay = this.time.getDate()
+            let fullYear = new Date().getFullYear()
+            let fullMonth = new Date().getMonth()
+            let fullDay = new Date().getDate()
 
             if (fullYear == year && fullMonth == month - 1) {
                 isCurrentMonth = true
