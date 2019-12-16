@@ -1,6 +1,6 @@
 /**
  * calendar 1.0.6
- * created at Tue Jul 09 2019 10:09:37 GMT+0800 (GMT+08:00)
+ * created at Mon Dec 16 2019 21:03:39 GMT+0800 (CST)
  */
 
 (function (global, factory) {
@@ -138,7 +138,7 @@
               this.resultArr = [];
               var week = this.week;
               var nextday = 0;
-              for (var i = this.week; i < 42; i++) {
+              for (var i = this.week; i <= 42; i++) {
 
                   if (this.week === 1) {
                       week = week > 7 ? 1 : week;

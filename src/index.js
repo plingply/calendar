@@ -97,7 +97,7 @@ class calendar {
         this.resultArr = []
         let week = this.week
         let nextday = 0
-        for (let i = this.week; i < 42; i++) {
+        for (let i = this.week; i <= 42; i++) {
 
             if (this.week === 1) {
                 week = week > 7 ? 1 : week
