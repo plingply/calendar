@@ -1,6 +1,6 @@
 /**
- * calendar 1.0.7
- * created at Mon Dec 16 2019 22:07:01 GMT+0800 (CST)
+ * calendar 1.0.8
+ * created at Mon Dec 16 2019 22:10:09 GMT+0800 (CST)
  */
 
 (function (global, factory) {
@@ -130,8 +130,7 @@
       }, {
           key: '_getMonthData',
           value: function _getMonthData() {
-              var currentYear = new Date().getFullYear();
-              var currentMonth = new Date().getMonth() + 1;
+
               var first = new Date(this.year, this.month, 1).getDay();
               if (this.week === 1) {
                   first = first === 0 ? 7 : first;
@@ -178,12 +177,7 @@
                       _month = this.month + 1;
                       _month = _month < 10 ? '0' + _month : _month + '';
                       year = this.year + '';
-
-                      if (currentYear == year && currentMonth == _month) {
-                          isCurrentMonth = true;
-                      } else {
-                          isCurrentMonth = false;
-                      }
+                      isCurrentMonth = true;
                   }
 
                   var isCurrentToday = false;
@@ -243,9 +237,9 @@
                   var isCurrentMonth = false;
                   var isCurrentToday = false;
 
-                  var fullYear = new Date().getFullYear();
-                  var fullMonth = new Date().getMonth();
-                  var fullDay = new Date().getDate();
+                  var fullYear = this.time.getFullYear();
+                  var fullMonth = this.time.getMonth();
+                  var fullDay = this.time.getDate();
 
                   if (fullYear == year && fullMonth == month - 1) {
                       isCurrentMonth = true;
